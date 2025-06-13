@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16 
+    container_name: homeoffice_postgres_db 
+    restart: always
+    environment:
+      POSTGRES_DB: homeoffice_db
+      POSTGRES_USER: homeoffice_user
+      POSTGRES_PASSWORD: "DevPassword123!"     
+    ports:
+      - "5432:5432"
+    volumes:
+      # Saving in volume
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+#define volume so no data gets lost when container shuts down
