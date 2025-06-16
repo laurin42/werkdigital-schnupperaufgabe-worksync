@@ -1,12 +1,12 @@
 import { config } from "../config"
-import { Response, NextFunction } from "express";
-import { JwtPayload, AuthenticateRequest } from "../types/type";
+import { Request, Response, NextFunction } from "express";
+import { JwtPayload } from "../types/type";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = config.jwtSecret;
 
 export function authMiddleware(
-    req: AuthenticateRequest,
+    req: Request,
     res: Response,
     next: NextFunction
 ) {
@@ -14,7 +14,8 @@ export function authMiddleware(
 
     //if header is missing or header does not contain "bearer" its not valid
     if (!authHeader || !authHeader.startsWith("Bearer")) {
-        return res.status(401).json({ message: "Authorization header missing or incorrect" });
+        res.status(401).json({ message: "Authorization header missing or incorrect" });
+        return;
     }
 
     //Getting the actual token by removing space
@@ -22,10 +23,14 @@ export function authMiddleware(
 
     try {
         const payload = jwt.verify(token, JWT_SECRET) as unknown as JwtPayload;
-        req.user = payload;
+        req.user = {
+            id: payload.userId,
+            email: payload.email
+        }
         next();
     } catch (error) {
-        return res.status(401).json({ message: "invalid or expired token" })
+        res.status(401).json({ message: "invalid or expired token" })
+        return;
     }
 }
 
