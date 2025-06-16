@@ -3,7 +3,7 @@ import { authMiddleware } from "../middleware/authMiddleware";
 
 const router = Router();
 
-router.get("/profile", authMiddleware, (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
     res.json({ user: req.user });
 });
 
