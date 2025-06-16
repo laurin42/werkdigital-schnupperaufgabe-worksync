@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import { Dashboard } from "./components/Dashboard";
+import { LoginForm } from "./components/LoginForm";
 
 export default function App() {
   const [token, setToken] = useState<string | null>(
@@ -25,7 +27,7 @@ export default function App() {
         {token ? (
           <Dashboard token={token} onLogout={handleLogout} />
         ) : (
-          <LoginForm onLoginSucess={handleLogin} />
+          <LoginForm onLoginSuccess={handleLogin} />
         )}
       </main>
     </div>

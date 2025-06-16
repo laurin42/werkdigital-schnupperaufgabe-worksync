@@ -11,3 +11,13 @@ export interface WorkSession {
     endTime: string | null;
     note: string | null;
 }
+
+
+export interface DashboardProps {
+  token: string;
+  onLogout: () => void;
+}
+
+export interface LoginFormProps {
+  onLoginSuccess: (token: string) => void;
+}
