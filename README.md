@@ -6,7 +6,7 @@ Dies ist ein einfaches System zur **Erfassung von Arbeitszeiten** im HomeOffice.
 Das Projekt ist als **Monorepo** aufgebaut und trennt die Frontend- und Backend-Anwendung.
 
 ## Tech Stack
-**Backend**: Node.js, Express, Drizzle ORM, PostgreSQL (NeonDB)
+**Backend**: Node.js, Express, Drizzle ORM, PostgreSQL (Docker)
 
 **Frontend**: React, Vite, TypeScript
 
