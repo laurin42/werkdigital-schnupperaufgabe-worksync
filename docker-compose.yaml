@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  #BACKEND
+  backend:
+    build: ./backend
+    container_name: worksync_backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres-db:5432/${DB_NAME}"
+      JWT_SECRET: ${JWT_SECRET}
+      SUPERUSER_EMAIL: ${SUPERUSER_EMAIL}
+      SUPERUSER_PASS: ${SUPERUSER_PASS}
+      ETHEREAL_USER_EMAIL: ${ETHEREAL_USER_EMAIL}
+      ETHEREAL_USER_PASS: ${ETHEREAL_USER_PASS}
+      ETHEREAL_ADMIN_MAIL: ${ETHEREAL_ADMIN_MAIL}
+    depends_on:
+      - postgres-db
+
+  #FRONTEND
+  frontend:
+    build: ./frontend
+    container_name: worksync_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+    #DATABASE (POSTGRESQL)
+  postgres-db:
+    image: postgres:16
+    container_name: homeoffice_postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${homeoffice_db}
+      POSTGRES_USER: ${homeoffice_user}
+      POSTGRES_PASSWORD: ${password}
+    ports:
+      - "5432:5432"
+    volumes:
+      # Saving in volume
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+#define volume so no data gets lost when container shuts down
