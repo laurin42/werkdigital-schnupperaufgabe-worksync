@@ -10,7 +10,8 @@
     "start": "node dist/index.js",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "seed": "ts-node src/scripts/seed"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

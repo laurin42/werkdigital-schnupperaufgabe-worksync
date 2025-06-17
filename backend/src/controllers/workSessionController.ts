@@ -12,15 +12,31 @@ export async function startWorkSession(req: Request, res: Response) {
         return;
     }
     try {
+        const activeSessions = await db
+            .select()
+            .from(workSession)
+            .where(
+                and(
+                    eq(workSession.userId, user.userId),
+                    isNull(workSession.endTime) 
+                )
+            );
+
+        if (activeSessions.length > 0) {
+            res.status(409).json({ message: "Eine Homeoffice Session ist bereits aktiv." });
+            return;
+        }
+
         await db.insert(workSession).values({
             userId: user.userId,
             startTime: new Date()
         });
-        res.status(201).json({ message: "Homeoffice Session started" })
+        res.status(201).json({ message: "Homeoffice Session gestartet." });
         return;
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error starting Homeoffice Session", error });
+        console.error("Error starting Homeoffice Session:", error); 
+        res.status(500).json({ message: "Fehler beim Starten der Homeoffice Session.", error: String(error) }); 
     }
 }
 
@@ -56,12 +72,12 @@ export async function stopWorkSession(req: Request, res: Response) {
         const endTime = new Date();
         const startTime = activeSession.startTime;
         const totalMs = endTime.getTime() - startTime.getTime();
-        const totalMinutes = Math.round(totalMs / 60000) // Conversion from ms to minutes
+        const totalSeconds = Math.round(totalMs / 1000);
 
         const updatedSessions = await db.update(workSession)
             .set({ 
                 endTime: endTime,
-                totalTime: totalMinutes
+                totalTime: totalSeconds
              })
             .where(eq(workSession.id, activeSession.id))
             .returning();

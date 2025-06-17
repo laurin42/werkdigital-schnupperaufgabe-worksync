@@ -47,3 +47,8 @@ export async function seed() {
     }
     console.log("Seeding complete");
 }
+
+seed().catch((err) => {
+    console.error("Unhandled error during seeding:", err);
+    process.exit(1); // Beendet den Prozess mit Fehlercode, wenn etwas schiefgeht
+});

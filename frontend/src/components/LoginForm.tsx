@@ -44,7 +44,7 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
           <input
             id="password"
             type="password"
-            placeholder=""
+            placeholder="passwort"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

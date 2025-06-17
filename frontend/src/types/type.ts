@@ -9,7 +9,13 @@ export interface WorkSession {
     userId: string;
     startTime: string;
     endTime: string | null;
+    totalTime: number | null;
     note: string | null;
+}
+
+export interface StopSessionResponse {
+  message: string;
+  session: WorkSession;
 }
 
 

@@ -1,47 +1,45 @@
 version: "3.8"
 
 services:
-  #BACKEND
+  postgres_db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - schnupperaufgabe_worksync_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"] # <-- Use variables here
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend
-    container_name: worksync_backend
-    ports:
-      - "3000:3000"
+    restart: on-failure
     environment:
-      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@postgres-db:5432/${DB_NAME}"
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASS}@postgres_db:5432/${DB_NAME}
       JWT_SECRET: ${JWT_SECRET}
       SUPERUSER_EMAIL: ${SUPERUSER_EMAIL}
       SUPERUSER_PASS: ${SUPERUSER_PASS}
-      ETHEREAL_USER_EMAIL: ${ETHEREAL_USER_EMAIL}
-      ETHEREAL_USER_PASS: ${ETHEREAL_USER_PASS}
-      ETHEREAL_ADMIN_MAIL: ${ETHEREAL_ADMIN_MAIL}
+    ports:
+      - "3000:3000"
     depends_on:
-      - postgres-db
+      postgres_db:
+        condition: service_healthy
 
-  #FRONTEND
   frontend:
     build: ./frontend
-    container_name: worksync_frontend
+    restart: always
     ports:
       - "8080:80"
     depends_on:
-      - backend
-
-    #DATABASE (POSTGRESQL)
-  postgres-db:
-    image: postgres:16
-    container_name: homeoffice_postgres_db
-    restart: always
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-    ports:
-      - "5432:5432"
-    volumes:
-      # Saving in volume
-      - postgres_data:/var/lib/postgresql/data
+      backend:
+        condition: service_started
 
 volumes:
-  postgres_data:
-#define volume so no data gets lost when container shuts down
+  schnupperaufgabe_worksync_postgres_data:

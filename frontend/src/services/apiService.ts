@@ -1,4 +1,5 @@
 import { User, WorkSession } from "../types/type";
+import { StopSessionResponse } from "../types/type";
 
 const BASE_URL = "/api";
 
@@ -31,16 +32,19 @@ export const apiService = {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
         });
-        if (!response.ok) throw new Error("Session could not be started");
+        if (!response.ok) throw new Error("Session läuft bereits. Bitte zuerst beenden, dann neu starten");
         return await response.json();
     },
 
-    async stopWorkSession(token: string): Promise<WorkSession> {
+    async stopWorkSession(token: string): Promise<StopSessionResponse> {
         const response = await fetch(`${BASE_URL}/worksession/stop`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
         });
-        if (!response.ok) throw new Error("Session could not be stopped");
-        return await response.json();
-    },
-};
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error stopping Homeoffice Session" );
+    }
+    return response.json();
+    }
+}

@@ -26,8 +26,8 @@ app.use("/api/worksession", workSessionRouter)
 //START SERVER
 async function startServer() {
   try {
-    console.log("seed database");
-
+    //console.log("seed database");
+    //await seed();
 
     app.listen(PORT, () => {
       console.log(`Server running on ${PORT}`);

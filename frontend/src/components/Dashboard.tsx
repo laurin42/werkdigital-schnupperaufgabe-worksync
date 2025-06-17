@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { apiService } from "../services/apiService";
 import { User, DashboardProps } from "../types/type";
+import { formatMinutesToHHMMSS } from "../utils/dateUtils";
 
 export function Dashboard({ token, onLogout }: DashboardProps) {
   const [profile, setProfile] = useState<User | null>(null);
@@ -37,8 +38,14 @@ export function Dashboard({ token, onLogout }: DashboardProps) {
   const handleStop = async () => {
     setError("");
     try {
-      await apiService.stopWorkSession(token);
-      setSessionStatus("Homeoffice Session beendet");
+      const response = await apiService.stopWorkSession(token);
+      if (response.session && response.session.totalTime !== null) {
+        const totalSeconds = response.session.totalTime;
+        const formattedTotalTime = formatMinutesToHHMMSS(totalSeconds);
+        setSessionStatus(`Dauer der letzten Session: ${formattedTotalTime}`);
+      } else {
+        setSessionStatus("Homeoffice Session beendet");
+      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -53,9 +60,6 @@ export function Dashboard({ token, onLogout }: DashboardProps) {
     <div className="card-container-dashboard">
       <header>
         <h2>Schön, dass Du da bist!</h2>
-        <button onClick={onLogout} className="button-logout">
-          Abmelden
-        </button>
       </header>
       <section className="session-control">
         <h3>Deine Zeiten</h3>
@@ -76,6 +80,9 @@ export function Dashboard({ token, onLogout }: DashboardProps) {
             Stop
           </button>
         </div>
+        <button onClick={onLogout} className="button-logout">
+          Abmelden
+        </button>
       </section>
     </div>
   );
