@@ -33,6 +33,7 @@ export async function stopWorkSession(req: Request, res: Response) {
     }
 
     try {
+        //Active Sessions
         const sessions = await db.select().from(workSession)
             .where(
                 and(
@@ -50,14 +51,31 @@ export async function stopWorkSession(req: Request, res: Response) {
             return;
         }
 
-        await db.update(workSession)
-            .set({ endTime: new Date() })
-            .where(eq(workSession.id, activeSession.id));
-        res.status(200).json({ message: "Homeoffice Session stopped" });
-        return;
-    } catch (error) {
+
+        //TOTAL TIME CALCULATION
+        const endTime = new Date();
+        const startTime = activeSession.startTime;
+        const totalMs = endTime.getTime() - startTime.getTime();
+        const totalMinutes = Math.round(totalMs / 60000) // Conversion from ms to minutes
+
+        const updatedSessions = await db.update(workSession)
+            .set({ 
+                endTime: endTime,
+                totalTime: totalMinutes
+             })
+            .where(eq(workSession.id, activeSession.id))
+            .returning();
+
+            const updatedSession = updatedSessions[0];
+
+        res.status(200).json({ 
+            message: "Homeoffice Session stopped",
+        session: updatedSession });
+    
+
+        } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error stopping Homeoffice session" });
         return;
-    }
+        }
 }

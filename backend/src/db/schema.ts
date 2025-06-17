@@ -1,4 +1,4 @@
-import { pgTable, serial, timestamp, uuid, text } from "drizzle-orm/pg-core";
+import { pgTable, serial, timestamp, uuid, text, integer } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey(),
@@ -14,6 +14,7 @@ export const workSession = pgTable("work_sessions", {
         .references(() => users.id), // Foreign Key 
     startTime: timestamp("start_time").notNull(),
     endTime: timestamp("end_time"),
+    totalTime: integer("total_time"),
     note: text("note"),
 
 });
