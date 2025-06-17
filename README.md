@@ -41,15 +41,23 @@ Das Projekt ist als **Monorepo** aufgebaut und trennt die Frontend- und Backend-
 
 ## Start via Docker
 
-Alle `docker compose`-Befehle müssen aus dem **Projekt-Root-Verzeichnis** ausgeführt werden, da sich dort die `docker-compose.yaml` und die `.env`-Datei befinden.
+Alle `docker compose`-Befehle müssen aus dem **Projekt-Root-Verzeichnis** (werkdigital-schnupperaufgabe-worksync) ausgeführt werden, da sich dort die `docker-compose.yaml` und die `.env`-Datei befinden.
 
 Für den schnellen Start ist eine .env-Datei mit bereits im Projekt-Root-enthalten.
 Sie muss nicht erstellt oder angepasst werden -
 Dies ist nur für Entwicklungs und Demozwecke gedacht!
 
+### Repository klonen
+
+<pre><code>
+git clone <https://github.com/laurin42/WorkSync>
+cd werkdigital-schnupperaufgabe-worksync
+</code></pre>
+
 ### Alte Container und Datenbank-Volumes entfernen
 
 <pre><code>
+cd werkdigital-schnupperaufgabe-worksync
 docker compose down --volumes --remove-orphans
 </code></pre>
 
@@ -64,6 +72,7 @@ docker compose up --build
 In einem neuem Terminal:
 
 <pre><code>
+cd werkdigital-schnupperaufgabe-worksync
 docker compose exec backend npm run db:push
 </code></pre>
 
@@ -78,7 +87,8 @@ docker compose exec backend npm run seed
 In einem neuen Terminal:
 
 <pre><code>
-cd backend
+cd werkdigital-schnupperaufgabe-worksync/backend
+npm install drizzle-kit
 npx drizzle-kit studio
 </code></pre>
 
