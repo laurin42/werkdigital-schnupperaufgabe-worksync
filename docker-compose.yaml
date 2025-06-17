@@ -33,9 +33,9 @@ services:
     container_name: homeoffice_postgres_db
     restart: always
     environment:
-      POSTGRES_DB: ${homeoffice_db}
-      POSTGRES_USER: ${homeoffice_user}
-      POSTGRES_PASSWORD: ${password}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     ports:
       - "5432:5432"
     volumes:

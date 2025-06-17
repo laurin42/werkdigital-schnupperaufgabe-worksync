@@ -11,7 +11,7 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
   //HANDLE LOGIN
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError;
+    setError("");
     setIsLoading(true);
     try {
       const token = await apiService.login(email, password);
@@ -27,13 +27,14 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
     <div className="card-container">
       <h2>Login</h2>
       {/*LOGIN FORM */}
-      <form onSubmit={handleSubmit} className="form">
+      <form onSubmit={handleSubmit} className="form" autoComplete="off">
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             value={email}
+            placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -43,6 +44,7 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
           <input
             id="password"
             type="password"
+            placeholder=""
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
